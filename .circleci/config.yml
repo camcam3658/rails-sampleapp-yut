@@ -56,6 +56,7 @@ jobs:
       - image: cimg/ruby:2.7-node
         environment:
           RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+    working_directory: ~/rails-sampleapp-yut/src
     steps:
       - checkout
       - setup_remote_docker:
