@@ -37,9 +37,6 @@ jobs:
       - checkout:
           path: ~/rails-sampleapp-yut
       - ruby/install-deps
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-key: "yarn.lock"
       - run: bundle exec bin/webpack
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client
