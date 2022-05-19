@@ -15,9 +15,7 @@ jobs:
       - checkout:
           path: ~/rails-sampleapp-yut
       - ruby/install-deps
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-key: "yarn.lock"
+
 
   test:
     docker:
@@ -46,6 +44,9 @@ jobs:
       - run: whoami
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
+      - run:
+ +        name: yarn Install
+ +        command: yarn install
       - run:
           name: Database setup
           command: bundle exec rails db:migrate
