@@ -9,7 +9,8 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/ruby:2.7-node
+      - image: cimg/ruby:2.7
+      - image: cimg/node:14.19.3
     working_directory: ~/rails-sampleapp-yut/src
     steps:
       - checkout:
@@ -19,7 +20,8 @@ jobs:
 
   test:
     docker:
-      - image: cimg/ruby:2.7-node
+      - image: cimg/ruby:2.7
+      - image: cimg/node:14.19.3
       - image: cimg/postgres:14.2
         environment:
           POSTGRES_PASSWORD: password
