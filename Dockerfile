@@ -2,7 +2,6 @@ FROM ruby:2.7
 
 ENV RAILS_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=1
-ARG RAILS_MASTER_KEY
 ENV RAILS_MASTER_KEY ${RAILS_MASTER_KEY}
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
