@@ -1,0 +1,80 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.7.1
+  heroku: circleci/heroku@1.2.6
+
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:3.1.1
+    working_directory: ~/rails-sampleapp-hmd2
+    steps:
+      - checkout:
+          path: ~/rails-sampleapp-hmd2
+      - ruby/install-deps
+
+  test:
+    docker:
+      - image: cimg/ruby:3.1.1
+      - image: cimg/postgres:14.2
+        environment:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DATABASE: app_test
+          POSTGRES_USER: postgres
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      MYAPP_DATABASE_HOST: "127.0.0.1"
+      RAILS_ENV: test
+    working_directory: ~/rails-sampleapp-hmd2
+    steps:
+      - checkout:
+          path: ~/rails-sampleapp-hmd2
+      - ruby/install-deps
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client
+      - run: whoami
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
+      - run:
+          name: Database setup
+          command: bundle exec rails db:migrate
+      - run:
+          name: test
+          command: bundle exec rake test
+
+  deploy:
+    docker:
+      - image: cimg/ruby:3.1.1
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+      - heroku/install
+      - run:
+          name: heroku login
+          command: heroku container:login
+      - run:
+          name: push docker image
+          command: heroku container:push web -a $HEROKU_APP_NAME
+      - run:
+          name: release docker image
+          command: heroku container:release web -a $HEROKU_APP_NAME
+      - run:
+          name: database setup
+          command: heroku run bundle exec rake db:migrate RAILS_ENV=production -a $HEROKU_APP_NAME
+
+workflows:
+  version: 2
+  build_test_and_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
