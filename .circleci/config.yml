@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   ruby: circleci/ruby@1.7.1
   heroku: circleci/heroku@1.2.6
-  node: circleci/node@5.0.2
 
 
 
@@ -10,7 +9,6 @@ jobs:
   build:
     docker:
       - image: cimg/ruby:2.7
-      - image: cimg/node:14.19.3
     working_directory: ~/rails-sampleapp-yut/src
     steps:
       - checkout:
@@ -21,7 +19,6 @@ jobs:
   test:
     docker:
       - image: cimg/ruby:2.7
-      - image: cimg/node:14.19.3
       - image: cimg/postgres:14.2
         environment:
           POSTGRES_PASSWORD: password
@@ -37,15 +34,11 @@ jobs:
       - checkout:
           path: ~/rails-sampleapp-yut
       - ruby/install-deps
-      - run: bundle exec bin/webpack
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client
       - run: whoami
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
-      - run:
-          name: yarn Install
-          command: yarn install
       - run:
           name: Database setup
           command: bundle exec rails db:migrate
@@ -55,7 +48,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/ruby:2.7-node
+      - image: cimg/ruby:2.7
     steps:
       - checkout
       - setup_remote_docker:
