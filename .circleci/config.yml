@@ -68,7 +68,7 @@ jobs:
       - run:
           name: export rails master key
           command: |
-            "--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}"
+          export RAILS_MASTER_KEY=${RAILS_MASTER_KEY}"
       - run:
           name: push docker image
           command: heroku container:push web -a $HEROKU_APP_NAME
@@ -88,6 +88,7 @@ workflows:
           requires:
             - build
       - deploy:
+          extra-build-args:  "--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}"
           requires:
             - test
           filters:
