@@ -6,30 +6,30 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/ruby:3.1.1
-    working_directory: ~/rails-sampleapp-hmd2
+      - image: cimg/ruby:2.7
+    working_directory: ~/rails-sampleapp-yut
     steps:
       - checkout:
-          path: ~/rails-sampleapp-hmd2
+          path: ~/rails-sampleapp-yut
       - ruby/install-deps
 
   test:
     docker:
-      - image: cimg/ruby:3.1.1
+      - image: cimg/ruby:2.7
       - image: cimg/postgres:14.2
         environment:
           POSTGRES_PASSWORD: password
-          POSTGRES_DATABASE: app_test
+          POSTGRES_DATABASE: myapp_test
           POSTGRES_USER: postgres
     environment:
       BUNDLE_JOBS: "3"
       BUNDLE_RETRY: "3"
       MYAPP_DATABASE_HOST: "127.0.0.1"
       RAILS_ENV: test
-    working_directory: ~/rails-sampleapp-hmd2
+    working_directory: ~/rails-sampleapp-yut
     steps:
       - checkout:
-          path: ~/rails-sampleapp-hmd2
+          path: ~/rails-sampleapp-yut
       - ruby/install-deps
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client
@@ -45,7 +45,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/ruby:3.1.1
+      - image: cimg/ruby:2.7
     steps:
       - checkout
       - setup_remote_docker:
