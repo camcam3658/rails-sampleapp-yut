@@ -54,6 +54,8 @@ jobs:
   deploy:
     docker:
       - image: cimg/ruby:2.7-node
+      environment:
+          RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
     steps:
       - checkout
       - setup_remote_docker:
